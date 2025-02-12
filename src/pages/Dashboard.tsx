@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { Box, Card, Grid2 as Grid } from "@mui/material";
 
 import Category from "../components/Category";
-import { listCategoriesForDashboard } from "../services/api";
+import { ICategory, listCategoriesForDashboard } from "../services/api";
 
 const Dashboard = () => {
-  const [categories, setCategories] = useState<
-    { name: string; total: number }[]
-  >([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -29,7 +27,11 @@ const Dashboard = () => {
       >
         {categories.map((category, idx) => (
           <Grid key={idx} size={{ xs: 12, lg: 6, xl: 3 }}>
-            <Category name={category.name} total={category.total} />
+            <Category
+              name={category.name}
+              total={category.total}
+              type={category.type}
+            />
           </Grid>
         ))}
       </Grid>
