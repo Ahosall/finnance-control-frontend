@@ -36,7 +36,6 @@ const Dashboard = () => {
 
       <Card sx={{ my: 2, height: "60vh" }}></Card>
       <Card sx={{ height: "45vh" }}></Card>
-      <Card sx={{ mt: 2, height: "30vh" }}></Card>
     </Box>
   );
 };
