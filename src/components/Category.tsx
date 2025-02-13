@@ -17,7 +17,7 @@ const Category = ({ name, total, type }: Props) => {
       <CardContent>
         <Grid container spacing={1}>
           <Grid size={2}>
-            {type === "INCOME" ? <IncomeIcon color="success" /> : <ExpenseIcon color="error"/>}
+            {type === "INCOME" ? <IncomeIcon color="info" /> : <ExpenseIcon color="error"/>}
           </Grid>
           <Grid size="auto">
             <Typography
