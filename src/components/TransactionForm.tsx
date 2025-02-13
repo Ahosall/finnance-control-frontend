@@ -16,12 +16,10 @@ import {
   editTransaction,
   listCategoriesForDashboard,
   ICategory,
+  ITransaction,
+  getTransactionById,
 } from "../services/api";
-
-interface Props {
-  id?: string;
-  mode?: "view" | "edit";
-}
+import { useNavigate } from "react-router-dom";
 
 const formatCurrency = (inputValue: string) => {
   let rawValue = inputValue.replace(/\D/g, "");
@@ -32,10 +30,26 @@ const formatCurrency = (inputValue: string) => {
   });
 };
 
-const TransactionForm = ({ id, mode }: Props) => {
+const defaultData = {
+  id: "",
+  date: new Date(),
+  amount: 0.0,
+  categoryId: "",
+  description: "",
+};
+
+interface Props {
+  transactionId?: string;
+  mode?: "view" | "edit";
+}
+
+const TransactionForm = ({ transactionId, mode }: Props) => {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [value, setValue] = useState("R$ 0,00");
+  const [transaction, setTransaction] = useState<ITransaction>(defaultData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,41 +72,60 @@ const TransactionForm = ({ id, mode }: Props) => {
     }
 
     const form = e.currentTarget;
-    const formElements: any = form.elements as typeof form.elements & {
+    const formElements = form.elements as typeof form.elements & {
       date: { value: string };
-      amount: { value: string };
       description: { value: string };
     };
 
-    if (id && mode === "edit") {
-      await editTransaction(id, {
-        date: new Date(formElements.date.value),
-        categoryId: selectedCategoryId,
-        amount: formElements.amount.value,
-        description: formElements.description.value,
-      });
+    const amountFixed = parseFloat(
+      value
+        .replace(".", "")
+        .replace(",", ".")
+        .replace(/[0-9.]/g, "")
+    );
+
+    const data = {
+      date: new Date(formElements.date.value),
+      categoryId: selectedCategoryId,
+      amount: amountFixed,
+      description: formElements.description.value,
+    };
+
+    if (transactionId && mode === "edit") {
+      await editTransaction(transactionId, data);
       return;
     }
 
-    await createTransaction({
-      date: new Date(formElements.date.value),
-      categoryId: selectedCategoryId,
-      amount: formElements.amount.value,
-      description: formElements.description.value,
-    });
+    await createTransaction(data);
   };
 
   useEffect(() => {
     (async () => {
       const categoriesApi = await listCategoriesForDashboard();
       setCategories(categoriesApi);
+
+      if (transactionId) {
+        const transactionApi = await getTransactionById(transactionId);
+        if (transactionApi) {
+          setTransaction(transactionApi);
+          const formattedValue = formatCurrency(
+            transactionApi.amount.toString()
+          );
+          setValue(formattedValue);
+        } else {
+          navigate(-1);
+        }
+      }
     })();
   }, []);
 
   return (
     <Card component="form" onSubmit={handleSave}>
       <CardContent>
-        <Typography variant="h5">Nova transação</Typography>
+        <Typography variant="h5">
+          {mode === "edit" ? "Editar " : mode === "view" ? "" : "Registrar "}
+          Transação
+        </Typography>
         <Box sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, md: 4 }}>
@@ -102,7 +135,7 @@ const TransactionForm = ({ id, mode }: Props) => {
                 label="Data"
                 variant="outlined"
                 fullWidth
-                defaultValue={new Date().toISOString().split("T")[0]}
+                defaultValue={transaction.date.toISOString().split("T")[0]}
               />
             </Grid>
             <Grid size={{ xs: 6, md: 4 }}>
@@ -111,7 +144,7 @@ const TransactionForm = ({ id, mode }: Props) => {
                 id="category"
                 label="Categoria"
                 variant="outlined"
-                defaultValue=""
+                defaultValue={transaction.categoryId}
                 fullWidth
                 onChange={(e) => {
                   const category = categories.find(
@@ -145,6 +178,7 @@ const TransactionForm = ({ id, mode }: Props) => {
                 id="description"
                 label="Descrição"
                 variant="outlined"
+                defaultValue={transaction.description}
                 autoComplete="off"
                 fullWidth
               />
@@ -152,10 +186,23 @@ const TransactionForm = ({ id, mode }: Props) => {
           </Grid>
         </Box>
       </CardContent>
-      <CardActions sx={{ justifyContent: "end" }}>
-        <Button variant="contained" color="success" type="submit">
-          Salvar
+      <CardActions sx={{ justifyContent: mode ? "space-between" : "end" }}>
+        <Button variant="contained" color="info">
+          Voltar
         </Button>
+
+        <Grid container spacing={1}>
+          <Grid size={6}>
+            <Button variant="contained" color="warning">
+              Editar
+            </Button>
+          </Grid>
+          <Grid size={6}>
+            <Button variant="contained" color="success">
+              Novo
+            </Button>
+          </Grid>
+        </Grid>
       </CardActions>
     </Card>
   );
