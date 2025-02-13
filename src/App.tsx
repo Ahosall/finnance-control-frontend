@@ -1,4 +1,4 @@
-import { Box, CssBaseline, Toolbar } from "@mui/material";
+import { Box, createTheme, CssBaseline, ThemeProvider, Toolbar } from "@mui/material";
 import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
 
 // Componentes
@@ -10,25 +10,34 @@ import Dashboard from "./pages/Dashboard";
 import NewTransaction from "./pages/transations/New";
 import ListTransactions from "./pages/transations/List";
 
+// Theme
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
 const App = () => {
   const layout = (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Header />
-      <Navigation />
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <Header />
+        <Navigation />
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 3,
-          px: { xs: 2, md: 10, xl: 20 },
-          width: `calc(100% - 270px)`,
-        }}
-      >
-        <Toolbar />
-        <Outlet />
-      </Box>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            py: 3,
+            px: { xs: 2, md: 10, xl: 20 },
+            width: `calc(100% - 270px)`,
+          }}
+        >
+          <Toolbar />
+          <Outlet />
+        </Box>
+      </ThemeProvider>
     </Box>
   );
 
