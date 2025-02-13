@@ -12,13 +12,17 @@ export interface ITransaction {
 export interface ICategory {
   id: string;
   name: string;
-  total: number;
   type: "EXPENSE" | "INCOME";
   updatedAt: number;
 }
 
-type TListCategoriesDashboardFunction = () => Promise<ICategory[]>;
+export type TCategoryForDashboard = {
+  total: number;
+} & ICategory;
+
 type TListTransactionsFunction = () => Promise<ITransaction[]>;
+type TListCategoriesFunction = () => Promise<ICategory[]>;
+type TListCategoriesDashboardFunction = () => Promise<TCategoryForDashboard[]>;
 
 export const listTransactions: TListTransactionsFunction = async () => {
   const transactions: ITransaction[] = [
@@ -64,7 +68,7 @@ export const listTransactions: TListTransactionsFunction = async () => {
 export const listCategoriesForDashboard: TListCategoriesDashboardFunction =
   async () => {
     return new Promise((resolve) => {
-      const categories: ICategory[] = [
+      const categories: TCategoryForDashboard[] = [
         {
           id: "a",
           name: "Salário",
@@ -108,6 +112,39 @@ export const listCategoriesForDashboard: TListCategoriesDashboardFunction =
       }, 300);
     });
   };
+
+export const listCategories: TListCategoriesFunction = async () => {
+  const categories: ICategory[] = [
+    {
+      id: "a",
+      name: "Salário",
+      type: "INCOME",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 24 * 12,
+    },
+    {
+      id: "b",
+      name: "Outras Receitas",
+      type: "INCOME",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 24 * 10,
+    },
+    {
+      id: "c",
+      name: "Despesas Variáveis",
+      type: "EXPENSE",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 24 * 10,
+    },
+    {
+      id: "d",
+      name: "Despesas Obrigatórias",
+      type: "EXPENSE",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 24 * 16,
+    },
+  ];
+
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(categories), 300);
+  });
+};
 
 export const createTransaction = async (data: ITransaction) => {};
 

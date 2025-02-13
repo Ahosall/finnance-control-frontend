@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -14,8 +15,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { listTransactions } from "../../services/api";
-import { useEffect, useState } from "react";
+import {
+  ICategory,
+  listCategories,
+  listTransactions,
+} from "../../services/api";
 
 import {
   PaidOutlined as IncomeIcon,
@@ -24,48 +28,29 @@ import {
   FilterAltOffOutlined as DisableFilterIcon,
 } from "@mui/icons-material";
 
-const categories = [
-  {
-    id: "a",
-    name: "Salário",
-    type: "INCOME",
-  },
-  {
-    id: "d",
-    name: "Despesas Obrigatórias",
-    type: "EXPENSE",
-  },
-  {
-    id: "b",
-    name: "Outras Receitas",
-    type: "INCOME",
-  },
-  {
-    id: "c",
-    name: "Despesas Variáveis",
-    type: "EXPENSE",
-  },
-];
+interface IRow {
+  date: Date;
+  description: string;
+  category: string;
+  type: string;
+  amount: number;
+  total: number;
+}
 
 const ListTransactions = () => {
-  const [rows, setRows] = useState<
-    {
-      date: Date;
-      description: string;
-      category: string;
-      type: string;
-      amount: number;
-      total: number;
-    }[]
-  >([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [rows, setRows] = useState<IRow[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const createData = (data: {
-    date: Date;
-    description: string;
-    categoryId: string;
-    amount: number;
-  }) => {
+  const createData = (
+    data: {
+      date: Date;
+      description: string;
+      categoryId: string;
+      amount: number;
+    },
+    categories: ICategory[]
+  ) => {
     const { date, description, categoryId, amount } = data;
     const category = categories.find((c) => c.id === categoryId);
     return {
@@ -80,10 +65,13 @@ const ListTransactions = () => {
 
   useEffect(() => {
     (async () => {
-      const transactions = await listTransactions();
-      const newRows = transactions
+      const categoriesApi = await listCategories();
+      setCategories(categoriesApi);
+
+      const transactionsApi = await listTransactions();
+      const newRows = transactionsApi
         .reverse()
-        .map((transaction) => createData(transaction))
+        .map((transaction) => createData(transaction, categoriesApi))
         .reduce((acc: any, item, index) => {
           const previousTotal = index > 0 ? acc[index - 1].total : 0;
           const total =
@@ -220,4 +208,3 @@ const ListTransactions = () => {
 };
 
 export default ListTransactions;
-("");
