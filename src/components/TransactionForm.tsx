@@ -56,7 +56,7 @@ const TransactionForm = ({ id }: { id?: string }) => {
 
     if (id) {
       await editTransaction(id, {
-        date: formElements.date.value,
+        date: new Date(formElements.date.value),
         categoryId: selectedCategoryId,
         amount: formElements.amount.value,
         description: formElements.description.value,
@@ -65,7 +65,7 @@ const TransactionForm = ({ id }: { id?: string }) => {
     }
 
     await createTransaction({
-      date: formElements.date.value,
+      date: new Date(formElements.date.value),
       categoryId: selectedCategoryId,
       amount: formElements.amount.value,
       description: formElements.description.value,
@@ -83,7 +83,7 @@ const TransactionForm = ({ id }: { id?: string }) => {
     <Card component="form" onSubmit={handleSave}>
       <CardContent>
         <Typography variant="h5">Nova transação</Typography>
-        <Box sx={{mt: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, md: 4 }}>
               <TextField
