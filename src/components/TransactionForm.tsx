@@ -18,19 +18,24 @@ import {
   ICategory,
 } from "../services/api";
 
-const TransactionForm = ({ id }: { id?: string }) => {
+interface Props {
+  id?: string;
+  mode?: "view" | "edit";
+}
+
+const formatCurrency = (inputValue: string) => {
+  let rawValue = inputValue.replace(/\D/g, "");
+  let numericValue = parseFloat(rawValue) / 100;
+  return numericValue.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+};
+
+const TransactionForm = ({ id, mode }: Props) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [value, setValue] = useState("R$ 0,00");
-
-  const formatCurrency = (inputValue: string) => {
-    let rawValue = inputValue.replace(/\D/g, "");
-    let numericValue = parseFloat(rawValue) / 100;
-    return numericValue.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -47,6 +52,11 @@ const TransactionForm = ({ id }: { id?: string }) => {
 
   const handleSave = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (mode === "view") {
+      return;
+    }
+
     const form = e.currentTarget;
     const formElements: any = form.elements as typeof form.elements & {
       date: { value: string };
@@ -54,7 +64,7 @@ const TransactionForm = ({ id }: { id?: string }) => {
       description: { value: string };
     };
 
-    if (id) {
+    if (id && mode === "edit") {
       await editTransaction(id, {
         date: new Date(formElements.date.value),
         categoryId: selectedCategoryId,
