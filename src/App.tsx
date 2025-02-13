@@ -7,8 +7,8 @@ import Header from "./components/Header";
 
 // Pages
 import Dashboard from "./pages/Dashboard";
-import NewTransaction from "./pages/transations/New";
-import ListTransactions from "./pages/transations/List";
+import NewTransaction from "./pages/transactions/New";
+import ListTransactions from "./pages/transactions/List";
 
 // Theme
 const darkTheme = createTheme({
