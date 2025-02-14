@@ -1,6 +1,14 @@
+import axios from "axios";
+
+import { API_URL } from "../../config.json";
+
 /**
  * API Area
  */
+
+const api = axios.create({
+  baseURL: API_URL,
+});
 
 // Types
 export interface ITransaction {
@@ -27,43 +35,6 @@ type TListCategoriesFunction = () => Promise<ICategory[]>;
 type TListCategoriesDashboardFunction = () => Promise<TCategoryForDashboard[]>;
 
 // Data
-const transactions: ITransaction[] = [
-  {
-    id: "z",
-    date: new Date("2025-02-12T12:00:00"),
-    description: "Compras diversas",
-    amount: 210,
-    categoryId: "c",
-  },
-  {
-    id: "y",
-    date: new Date("2025-02-11T12:00:00"),
-    description: "Pgto. Aluguel Casa",
-    amount: 2600,
-    categoryId: "d",
-  },
-  {
-    id: "x",
-    date: new Date("2025-02-09T12:00:00"),
-    description: "Lucro com ações",
-    amount: 480,
-    categoryId: "b",
-  },
-  {
-    id: "w",
-    date: new Date("2025-02-08T12:00:00"),
-    description: "Pgto. Agua e Luz",
-    amount: 370,
-    categoryId: "d",
-  },
-  {
-    id: "t",
-    date: new Date("2025-02-07T12:00:00"),
-    description: "Recebimento salário",
-    amount: 2700,
-    categoryId: "a",
-  },
-];
 
 const categories: ICategory[] = [
   {
@@ -126,11 +97,19 @@ const categoriesForDashboard: TCategoryForDashboard[] = [
 /**
  * API Functions Area
  */
-export const listTransactions: TListTransactionsFunction = async () => {
-  transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
-
-  return new Promise((resolve) => {
-    resolve(transactions);
+export const listTransactions = async (
+  token: string,
+  startDate: Date,
+  endDate: Date
+) => {
+  const url = `/transactions?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
+  const conf = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return await api.get(url, conf).then((res) => {
+    return res.data.transactions;
   });
 };
 
