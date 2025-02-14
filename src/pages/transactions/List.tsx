@@ -27,8 +27,10 @@ import {
   FilterAltOutlined as EnableFilterIcon,
   FilterAltOffOutlined as DisableFilterIcon,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 interface IRow {
+  id: string;
   date: Date;
   description: string;
   category: string;
@@ -37,31 +39,37 @@ interface IRow {
   total: number;
 }
 
+const createData = (
+  data: {
+    id: string;
+    date: Date;
+    description: string;
+    categoryId: string;
+    amount: number;
+  },
+  categories: ICategory[]
+) => {
+  const { id, date, description, categoryId, amount } = data;
+  const category = categories.find((c) => c.id === categoryId);
+  return {
+    id,
+    date,
+    description,
+    category: category ? category.name : "",
+    type: category ? category.type : "",
+    amount,
+    total: 0,
+  };
+};
+
 const ListTransactions = () => {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [rows, setRows] = useState<IRow[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const createData = (
-    data: {
-      date: Date;
-      description: string;
-      categoryId: string;
-      amount: number;
-    },
-    categories: ICategory[]
-  ) => {
-    const { date, description, categoryId, amount } = data;
-    const category = categories.find((c) => c.id === categoryId);
-    return {
-      date,
-      description,
-      category: category ? category.name : "",
-      type: category ? category.type : "",
-      amount,
-      total: 0,
-    };
-  };
+  const toViewPage = (id: string) => navigate(`/transactions/${id}/`);
 
   useEffect(() => {
     (async () => {
@@ -165,7 +173,12 @@ const ListTransactions = () => {
               {rows.map((row, idx) => (
                 <TableRow
                   key={idx + "-"}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                    cursor: "pointer",
+                  }}
+                  onClick={() => toViewPage(row.id)}
+                  hover
                 >
                   <TableCell component="th" scope="row">
                     {row.date.toLocaleDateString()}
