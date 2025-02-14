@@ -10,8 +10,11 @@ import {
 
 import TransactionForm from "../../components/TransactionForm";
 
-import { getTransactionById, ITransaction } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
+import TransactionsService, {
+  ITransaction,
+} from "../../services/transactions.service";
+import { useAuth } from "../../context/auth.context";
 
 const formatCurrency = (inputValue: string) => {
   let rawValue = inputValue.replace(/\D/g, "");
@@ -26,6 +29,8 @@ const ViewTransaction = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const { token } = useAuth();
+
   const [amount, setAmount] = useState("");
   const [transaction, setTransaction] = useState<ITransaction>();
 
@@ -33,9 +38,14 @@ const ViewTransaction = () => {
   const toEditPage = () => navigate(`/transactions/${params.id}/edit`);
 
   useEffect(() => {
-    (async () => {
+    if (!token) return;
+
+    const transactionsApi = new TransactionsService(token);
+
+    const fetchData = async () => {
       if (params.id) {
-        const transactionApi = await getTransactionById(params.id);
+        const res = await transactionsApi.getTransactionById(params.id);
+        const transactionApi = res.data.transaction;
         if (transactionApi) {
           const formattedValue = formatCurrency(`${transactionApi.amount}`);
           setTransaction(transactionApi);
@@ -44,8 +54,10 @@ const ViewTransaction = () => {
           navigate(-1);
         }
       }
-    })();
-  }, []);
+    };
+    
+    fetchData();
+  }, [token]);
 
   return (
     <Card>

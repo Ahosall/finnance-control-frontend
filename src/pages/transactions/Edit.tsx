@@ -4,14 +4,16 @@ import {
   Card,
   CardActions,
   CardContent,
-  Grid2 as Grid,
   Typography,
 } from "@mui/material";
 
 import TransactionForm from "../../components/TransactionForm";
 
-import { getTransactionById, ITransaction } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
+import TransactionsService, {
+  ITransaction,
+} from "../../services/transactions.service";
+import { useAuth } from "../../context/auth.context";
 
 const formatCurrency = (inputValue: string) => {
   let rawValue = inputValue.replace(/\D/g, "");
@@ -26,16 +28,24 @@ const EditTransaction = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const { token } = useAuth();
+
   const [amount, setAmount] = useState("");
   const [transaction, setTransaction] = useState<ITransaction>();
 
-  const toNewPage = () => navigate(`/transactions/new`);
-  const toEditPage = () => navigate(`/transactions/${params.id}/edit`);
+  const handleSave = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
 
   useEffect(() => {
-    (async () => {
+    if (!token) return;
+
+    const transactionsApi = new TransactionsService(token);
+
+    const fetchData = async () => {
       if (params.id) {
-        const transactionApi = await getTransactionById(params.id);
+        const res = await transactionsApi.getTransactionById(params.id);
+        const transactionApi = res.data.transaction;
         if (transactionApi) {
           const formattedValue = formatCurrency(`${transactionApi.amount}`);
           setTransaction(transactionApi);
@@ -44,16 +54,17 @@ const EditTransaction = () => {
           navigate(-1);
         }
       }
-    })();
-  }, []);
+    };
+
+    fetchData();
+  }, [token]);
 
   return (
-    <Card>
+    <Card component="form" onSubmit={handleSave}>
       <CardContent>
         <Typography variant="h5">Editar Transação</Typography>
 
         <TransactionForm
-          readOnly
           data={transaction}
           amountValueState={amount}
           setSelectedCategoryId={() => null}
@@ -64,23 +75,9 @@ const EditTransaction = () => {
           Voltar
         </Button>
 
-        <Grid container spacing={1}>
-          <Grid>
-            <Button variant="contained" color="error">
-              Apagar
-            </Button>
-          </Grid>
-          <Grid>
-            <Button variant="contained" color="warning" onClick={toEditPage}>
-              Editar
-            </Button>
-          </Grid>
-          <Grid>
-            <Button variant="contained" color="success" onClick={toNewPage}>
-              Novo
-            </Button>
-          </Grid>
-        </Grid>
+        <Button variant="contained" color="success" type="submit">
+          Salvar
+        </Button>
       </CardActions>
     </Card>
   );

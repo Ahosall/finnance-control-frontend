@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react";
 import { Box, Card, Grid2 as Grid } from "@mui/material";
 
 import Category from "../components/Category";
-import { ICategory, listCategoriesForDashboard } from "../services/api";
+import { useCategoriesForDashboard } from "../hooks/categories.hook";
 
 const Dashboard = () => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const apiCategories = await listCategoriesForDashboard();
-      setCategories(apiCategories);
-    })();
-  }, []);
+  const { categoriesForDashboard } = useCategoriesForDashboard();
 
   return (
     <Box>
@@ -25,7 +17,7 @@ const Dashboard = () => {
           alignItems: "center",
         }}
       >
-        {categories.map((category, idx) => (
+        {categoriesForDashboard.map((category, idx) => (
           <Grid key={idx} size={{ xs: 12, lg: 6, xl: 3 }}>
             <Category
               name={category.name}

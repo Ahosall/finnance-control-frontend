@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -6,8 +7,6 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-
-import { createTransaction } from "../../services/api";
 
 import TransactionForm from "../../components/TransactionForm";
 
@@ -21,6 +20,8 @@ const formatCurrency = (inputValue: string) => {
 };
 
 const NewTransaction = () => {
+  const navigate = useNavigate();
+
   const [amount, setAmount] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
@@ -58,7 +59,7 @@ const NewTransaction = () => {
       description: formElements.description.value,
     };
 
-    await createTransaction(data);
+    // Lógica para criar transação
   };
 
   return (
@@ -72,7 +73,10 @@ const NewTransaction = () => {
           setSelectedCategoryId={setSelectedCategoryId}
         />
       </CardContent>
-      <CardActions sx={{ justifyContent: "end" }}>
+      <CardActions sx={{ justifyContent: "space-between" }}>
+        <Button variant="contained" color="info" onClick={() => navigate(-1)}>
+          Voltar
+        </Button>
         <Button variant="contained" color="success" type="submit">
           Salvar
         </Button>

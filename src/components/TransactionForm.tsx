@@ -1,11 +1,8 @@
-import { Box, Grid2 as Grid, MenuItem, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Box, Grid2 as Grid, MenuItem, TextField } from "@mui/material";
 
-import {
-  listCategoriesForDashboard,
-  ICategory,
-  ITransaction,
-} from "../services/api";
+import { useCategories } from "../hooks/categories.hook";
+import { ITransaction } from "../services/transactions.service";
 
 interface Props {
   amountValueState: string;
@@ -17,28 +14,24 @@ interface Props {
 
 const defaultData: ITransaction = {
   id: "",
-  date: new Date(),
+  userId: "",
   categoryId: "",
-  amount: 0,
+  amount: 0.0,
   description: "",
+  date: new Date().toISOString(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 const TransactionForm = (props: Props) => {
+  const { categories } = useCategories();
   const [transaction, setTransaction] = useState<ITransaction>(defaultData);
-  const [categories, setCategories] = useState<ICategory[]>([]);
 
   useEffect(() => {
     if (props.data) {
       setTransaction(props.data);
     }
   }, [props.data]);
-
-  useEffect(() => {
-    (async () => {
-      const categoriesApi = await listCategoriesForDashboard();
-      setCategories(categoriesApi);
-    })();
-  }, []);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -49,8 +42,9 @@ const TransactionForm = (props: Props) => {
             type="date"
             label="Data"
             variant="outlined"
+            defaultValue={transaction.date.split("T")[0]}
+            disabled={props.readOnly}
             fullWidth
-            defaultValue={transaction.date.toISOString().split("T")[0]}
           />
         </Grid>
         <Grid size={{ xs: 6, md: 4 }}>
@@ -59,8 +53,8 @@ const TransactionForm = (props: Props) => {
             id="category"
             label="Categoria"
             variant="outlined"
-            value={transaction.categoryId}
-            defaultValue={transaction.categoryId}
+            value={categories.length > 0 ? transaction.categoryId : ""}
+            disabled={props.readOnly}
             fullWidth
             onChange={(e) => {
               const category = categories.find((c) => c.id === e.target.value);
@@ -93,8 +87,8 @@ const TransactionForm = (props: Props) => {
             label="Descrição"
             variant="outlined"
             value={transaction.description}
-            defaultValue={transaction.description}
             autoComplete="off"
+            disabled={props.readOnly}
             fullWidth
           />
         </Grid>
