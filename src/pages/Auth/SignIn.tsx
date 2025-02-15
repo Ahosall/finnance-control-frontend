@@ -104,11 +104,14 @@ const SignIn = () => {
                     type="email"
                     label="E-mail"
                     autoComplete="off"
-                    defaultValue={email}
+                    value={email}
                     autoFocus
                     disabled={loading}
                     error={messageError != ""}
-                    onChange={() => setMessageError("")}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setMessageError("");
+                    }}
                     fullWidth
                     required
                   />
