@@ -4,6 +4,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
 } from "@mui/material";
@@ -25,62 +26,64 @@ const TransactionsList = ({ transactions }: Props) => {
   const toViewPage = (id: string) => navigate(`/transactions/${id}/`);
 
   return (
-    <Table sx={{ width: "100%", my: 3 }} component={Paper}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Data</TableCell>
-          <TableCell>Descrição</TableCell>
-          <TableCell>Categoria</TableCell>
-          <TableCell align="center">Tipo</TableCell>
-          <TableCell align="right">Valor</TableCell>
-          <TableCell align="right">Saldo</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {transactions.map((row, idx) => (
-          <TableRow
-            key={idx + "-"}
-            sx={{
-              "&:last-child td, &:last-child th": { border: 0 },
-              cursor: "pointer",
-            }}
-            onClick={() => toViewPage(row.id)}
-            hover
-          >
-            <TableCell component="th" scope="row">
-              {new Date(row.date).toLocaleDateString()}
-            </TableCell>
-            <TableCell>{row.description}</TableCell>
-            <TableCell>{row.category.name}</TableCell>
-            <TableCell align="center">
-              {row.category.type === "INCOME" ? (
-                <IncomeIcon color="info" />
-              ) : (
-                <ExpenseIcon color="error" />
-              )}
-            </TableCell>
-            <TableCell align="right">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(row.amount)}
-            </TableCell>
-            <TableCell
-              sx={{
-                color: row.balance < 0 ? "red" : "inherit",
-                fontWeight: row.balance < 0 ? 600 : 400,
-              }}
-              align="right"
-            >
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(row.balance)}
-            </TableCell>
+    <TableContainer sx={{ width: "100%", my: 3 }} component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Data</TableCell>
+            <TableCell>Descrição</TableCell>
+            <TableCell>Categoria</TableCell>
+            <TableCell align="center">Tipo</TableCell>
+            <TableCell align="right">Valor</TableCell>
+            <TableCell align="right">Saldo</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {transactions.map((row, idx) => (
+            <TableRow
+              key={idx + "-"}
+              sx={{
+                "&:last-child td, &:last-child th": { border: 0 },
+                cursor: "pointer",
+              }}
+              onClick={() => toViewPage(row.id)}
+              hover
+            >
+              <TableCell component="th" scope="row">
+                {new Date(row.date).toLocaleDateString()}
+              </TableCell>
+              <TableCell>{row.description}</TableCell>
+              <TableCell>{row.category.name}</TableCell>
+              <TableCell align="center">
+                {row.category.type === "INCOME" ? (
+                  <IncomeIcon color="info" />
+                ) : (
+                  <ExpenseIcon color="error" />
+                )}
+              </TableCell>
+              <TableCell align="right">
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(row.amount)}
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: row.balance < 0 ? "red" : "inherit",
+                  fontWeight: row.balance < 0 ? 600 : 400,
+                }}
+                align="right"
+              >
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(row.balance)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
