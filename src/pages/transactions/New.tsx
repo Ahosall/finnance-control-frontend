@@ -64,7 +64,7 @@ const NewTransaction = () => {
         <TransactionForm readOnly={loading} />
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
-        <Button variant="contained" color="info" onClick={() => navigate(-1)}>
+        <Button variant="contained" color="info" onClick={() => navigate('/transactions')}>
           Voltar
         </Button>
         <Button
