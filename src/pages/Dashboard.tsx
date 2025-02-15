@@ -13,12 +13,12 @@ const Dashboard = () => {
         direction="row"
         spacing={2}
         sx={{
-          justifyContent: "start",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
         {categoriesForDashboard.map((category, idx) => (
-          <Grid key={idx} size={{xs: 12, md: 6, lg: 3}}>
+          <Grid key={idx} size={{ xs: 12, md: 6, xl: 'grow' }}>
             <Category
               name={category.name}
               total={category.total}
