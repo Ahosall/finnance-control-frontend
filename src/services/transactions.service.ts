@@ -76,6 +76,12 @@ class TransactionsService {
     };
     return await this.api.put<{ transaction: ITransaction }>(url, data);
   }
+
+  async deleteTransaction(transactionId: string) {
+    const url = `/${transactionId}`;
+
+    return await this.api.delete(url);
+  }
 }
 
 export default TransactionsService;
