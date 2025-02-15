@@ -58,11 +58,7 @@ const ListTransactions = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ mt: 3 }}>
-        <CardContent>
-          <TransactionsList transactions={transactions} />
-        </CardContent>
-      </Card>
+      <TransactionsList transactions={transactions} />
     </Box>
   );
 };

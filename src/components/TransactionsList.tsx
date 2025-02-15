@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -24,7 +25,7 @@ const TransactionsList = ({ transactions }: Props) => {
   const toViewPage = (id: string) => navigate(`/transactions/${id}/`);
 
   return (
-    <Table sx={{ width: "100%" }}>
+    <Table sx={{ width: "100%", my: 3 }} component={Paper}>
       <TableHead>
         <TableRow>
           <TableCell>Data</TableCell>
