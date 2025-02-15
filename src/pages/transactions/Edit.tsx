@@ -16,13 +16,13 @@ import TransactionsService, {
 
 import TransactionForm from "../../components/TransactionForm";
 
-const formatCurrency = (inputValue: string) => {
-  let rawValue = inputValue.replace(/\D/g, "");
-  let numericValue = parseFloat(rawValue) / 100;
-  return numericValue.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
+const fixFormmatedAmount = (inputValue: string) => {
+  return parseFloat(
+    inputValue
+      .replace(".", "")
+      .replace(",", ".")
+      .replace(/[^0-9.]/g, "")
+  );
 };
 
 const EditTransaction = () => {
@@ -31,11 +31,36 @@ const EditTransaction = () => {
 
   const { token } = useAuth();
 
-  const [amount, setAmount] = useState("");
   const [transaction, setTransaction] = useState<ITransaction>();
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (!token || !params.id) return;
+
+    const transactionsApi = new TransactionsService(token);
+
+    const form = e.currentTarget;
+    const formElements = form.elements as typeof form.elements & {
+      date: { value: string };
+      amount: { value: string };
+      description: { value: string };
+    };
+
+    await transactionsApi
+      .editTransaction(
+        params.id,
+        new Date(formElements.date.value),
+        (form.elements as any)[2].value,
+        fixFormmatedAmount(formElements.amount.value),
+        formElements.description.value
+      )
+      .then((res) => {
+        navigate(`/transactions/${res.data.transaction.id}`);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -48,9 +73,7 @@ const EditTransaction = () => {
         const res = await transactionsApi.getTransactionById(params.id);
         const transactionApi = res.data.transaction;
         if (transactionApi) {
-          const formattedValue = formatCurrency(`${transactionApi.amount}`);
           setTransaction(transactionApi);
-          setAmount(formattedValue);
         } else {
           navigate(-1);
         }
@@ -65,18 +88,19 @@ const EditTransaction = () => {
       <CardContent>
         <Typography variant="h5">Editar Transação</Typography>
 
-        <TransactionForm
-          data={transaction}
-          amountValueState={amount}
-          setSelectedCategoryId={() => null}
-        />
+        <TransactionForm readOnly={loading} transaction={transaction} />
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
-        <Button variant="contained" color="info" onClick={() => navigate(-1)}>
+        <Button variant="contained" color="info" onClick={() => navigate('/transactions')}>
           Voltar
         </Button>
 
-        <Button variant="contained" color="success" type="submit">
+        <Button
+          variant="contained"
+          color="success"
+          type="submit"
+          loading={loading}
+        >
           Salvar
         </Button>
       </CardActions>

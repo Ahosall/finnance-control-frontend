@@ -59,6 +59,23 @@ class TransactionsService {
 
     return await this.api.get<{ transaction: ITransaction }>(url);
   }
+
+  async editTransaction(
+    transactionId: string,
+    date: Date,
+    categoryId: string,
+    amount: number,
+    description: string
+  ) {
+    const url = `/${transactionId}`;
+    const data = {
+      date,
+      categoryId,
+      amount,
+      description,
+    };
+    return await this.api.put<{ transaction: ITransaction }>(url, data);
+  }
 }
 
 export default TransactionsService;
