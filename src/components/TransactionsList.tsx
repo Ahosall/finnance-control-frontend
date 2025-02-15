@@ -50,7 +50,7 @@ const TransactionsList = ({ transactions }: Props) => {
               hover
             >
               <TableCell component="th" scope="row">
-                {new Date(row.date).toLocaleDateString()}
+                {new Date(row.date.split('T')[0] + 'T12:00:00.000Z').toLocaleDateString()}
               </TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.category.name}</TableCell>
