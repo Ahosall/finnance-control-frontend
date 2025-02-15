@@ -11,12 +11,15 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../hooks/auth.hook";
+import { useQuery } from "../../hooks/query.hook";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const queries = useQuery();
 
   const { token, login } = useAuth();
 
+  const [email, setEmail] = useState("");
   const [messageError, setMessageError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +54,10 @@ const SignIn = () => {
       navigate("/");
     }
   }, [token]);
+
+  useEffect(() => {
+    setEmail(queries.get("email") || "");
+  }, []);
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -97,6 +104,7 @@ const SignIn = () => {
                     type="email"
                     label="E-mail"
                     autoComplete="off"
+                    defaultValue={email}
                     autoFocus
                     disabled={loading}
                     error={messageError != ""}

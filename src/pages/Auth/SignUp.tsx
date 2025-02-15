@@ -49,7 +49,7 @@ const SignUp = () => {
         formElements.password.value
       )
       .then(() => {
-        navigate("/signin");
+        navigate(`/signin?email=${formElements.email.value}`);
       })
       .catch(() => {
         setMessageError("Falha ao tentar criar usuário");
