@@ -1,6 +1,6 @@
 import { Box, Card, Grid2 as Grid } from "@mui/material";
 
-import Category from "../components/Category";
+import CategoryCard from "../components/CategoryCard";
 import { useCategoriesForDashboard } from "../hooks/categories.hook";
 
 const Dashboard = () => {
@@ -19,7 +19,7 @@ const Dashboard = () => {
       >
         {categoriesForDashboard.map((category, idx) => (
           <Grid key={idx} size={{ xs: 12, md: 6, xl: 'grow' }}>
-            <Category
+            <CategoryCard
               name={category.name}
               total={category.total}
               type={category.type}
