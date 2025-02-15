@@ -18,7 +18,7 @@ const Dashboard = () => {
         }}
       >
         {categoriesForDashboard.map((category, idx) => (
-          <Grid key={idx} size='grow'>
+          <Grid key={idx} size={{xs: 12, md: 6, lg: 3}}>
             <Category
               name={category.name}
               total={category.total}
