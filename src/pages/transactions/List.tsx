@@ -14,7 +14,9 @@ import TransactionsService, {
 } from "../../services/transactions.service";
 
 import TransactionsList from "../../components/TransactionsList";
-import TransactionsFilter from "../../components/TransactionsFilter";
+import TransactionsFilter, {
+  IFilters,
+} from "../../components/TransactionsFilter";
 
 const ListTransactions = () => {
   const { token } = useAuth();
@@ -24,37 +26,58 @@ const ListTransactions = () => {
     []
   );
   const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<IFilters | undefined>();
+
+  const handleShowFilters = () => {
+    if (!showFilters === false) {
+      setFilters(undefined);
+    }
+    setShowFilters(!showFilters);
+  };
 
   useEffect(() => {
     if (!token) return;
 
     const transactionsApi = new TransactionsService(token);
 
-    const fetchData = async () => {
-      const date = new Date();
-      const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const fetchData = async (f: IFilters) => {
+      const start = new Date(f.start + "T12:00:00.000Z");
+      const end = new Date(f.end + "T12:00:00.000Z");
       const res = await transactionsApi.listTransactions(
-        new Date(start),
-        new Date()
+        start,
+        end,
+        f.categoryId
       );
       setTrasactions(res.data.transactions || []);
     };
 
-    fetchData();
-  }, [token]);
+    if (filters) {
+      fetchData(filters);
+    } else {
+      const dt = new Date();
+      const start = new Date(dt.getFullYear(), dt.getMonth(), 1).toISOString();
+      const end = new Date().toISOString();
+
+      fetchData({
+        start: start.split("T")[0],
+        end: end.split("T")[0],
+        categoryId: "dflt",
+      });
+    }
+  }, [filters, token]);
 
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h5">Transações</Typography>
-        <IconButton onClick={() => setShowFilters(!showFilters)}>
+        <IconButton onClick={handleShowFilters}>
           {showFilters ? <DisableFilterIcon /> : <EnableFilterIcon />}
         </IconButton>
       </Box>
 
       <Card sx={{ display: showFilters ? "block" : "none", mt: 3 }}>
         <CardContent>
-          <TransactionsFilter categories={categories} />
+          <TransactionsFilter categories={categories} setFilters={setFilters} />
         </CardContent>
       </Card>
 

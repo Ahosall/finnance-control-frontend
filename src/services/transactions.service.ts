@@ -46,10 +46,11 @@ class TransactionsService {
     return await this.api.post<{ transaction: ITransaction }>("/", data);
   }
 
-  async listTransactions(start: Date, end: Date) {
+  async listTransactions(start: Date, end: Date, categoryId?: string) {
     const startDate = start.toISOString().slice(0, 10);
     const endDate = end.toISOString().slice(0, 10);
-    const url = `?start=${startDate}&end=${endDate}`;
+    let url = `?start=${startDate}&end=${endDate}`;
+    url += categoryId ? `&categoryId=${categoryId}` : "";
 
     return await this.api.get<{ transactions: TTransactionWithBalance[] }>(url);
   }
