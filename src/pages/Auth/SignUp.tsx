@@ -88,6 +88,7 @@ const SignUp = () => {
               <Grid container spacing={2}>
                 <Grid size={12}>
                   <TextField
+                    id="name"
                     type="text"
                     label="Nome Completo"
                     autoComplete="off"
@@ -98,6 +99,7 @@ const SignUp = () => {
                 </Grid>
                 <Grid size={12}>
                   <TextField
+                  id="email"
                     type="email"
                     label="E-mail"
                     autoComplete="off"
@@ -108,12 +110,12 @@ const SignUp = () => {
                 </Grid>
                 <Grid size={12}>
                   <TextField
-                    error={passwordError !== ""}
                     type="password"
                     label="Senha"
                     autoComplete="off"
                     helperText={passwordError}
                     disabled={loading}
+                    error={passwordError !== ""}
                     fullWidth
                     required
                     onChange={(e) => {
@@ -129,12 +131,13 @@ const SignUp = () => {
                 </Grid>
                 <Grid size={12}>
                   <TextField
-                    error={retypeError !== ""}
+                    id="password"
                     type="password"
                     label="Senha Novamente"
                     autoComplete="off"
                     helperText={retypeError}
                     disabled={loading}
+                    error={retypeError !== ""}
                     fullWidth
                     required
                     onChange={(e) => {
