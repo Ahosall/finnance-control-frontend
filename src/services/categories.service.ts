@@ -6,6 +6,7 @@ export interface ICategory {
   id: string;
   name: string;
   type: "INCOME" | "EXPENSE";
+  showOnDashboard?: boolean;
   createdAt: Date;
 }
 
@@ -28,8 +29,18 @@ class CategoriesService {
   }
 
   async getCategoriesForDashboard() {
+    const url = "?onlyForDashboard=true";
     const res = await this.api.get<{ categories: TCategoriesForDashboard }>(
-      "?onlyForDashboard=true"
+      url
+    );
+    return res;
+  }
+
+  async updateCategory(categoryId: string, data: Partial<ICategory>) {
+    const url = `/${categoryId}`;
+    const res = await this.api.put<{ categories: TCategoriesForDashboard }>(
+      url,
+      data
     );
     return res;
   }

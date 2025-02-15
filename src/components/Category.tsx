@@ -23,7 +23,7 @@ const Category = ({ name, total, type }: Props) => {
               <ExpenseIcon color="error" />
             )}
           </Grid>
-          <Grid size="auto">
+          <Grid size={10}>
             <Typography
               gutterBottom
               sx={{ color: "text.secondary", fontSize: 14 }}

@@ -4,7 +4,6 @@ import Layout from "./components/Layout";
 import PrivateRoute from "./components/PrivateRoute";
 
 import Dashboard from "./pages/Dashboard";
-import NewCategory from "./pages/NewCategory";
 
 // Transaction Pages
 import NewTransaction from "./pages/transactions/New";
@@ -12,9 +11,12 @@ import ListTransactions from "./pages/transactions/List";
 import ViewTransaction from "./pages/transactions/View";
 import EditTransaction from "./pages/transactions/Edit";
 
+// Categories
+import ListCategories from "./pages/categories/List";
+
 // Auth pages
-import SignIn from "./pages/Auth/Signin";
-import SignUp from "./pages/Auth/Signup";
+import SignIn from "./pages/auth/SignIn";
+import SignUp from "./pages/auth/SignUp";
 
 const routes = createBrowserRouter([
   {
@@ -26,7 +28,7 @@ const routes = createBrowserRouter([
     ),
     children: [
       { path: "", element: <Dashboard /> },
-      { path: "/new-category", element: <NewCategory /> },
+      { path: "/categories", element: <ListCategories /> },
       { path: "/transactions/", element: <ListTransactions /> },
       { path: "/transactions/new", element: <NewTransaction /> },
       { path: "/transactions/:id", element: <ViewTransaction /> },

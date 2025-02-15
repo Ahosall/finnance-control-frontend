@@ -15,7 +15,7 @@ import {
   SpaceDashboardOutlined as DashboardIcon,
   AddCircleOutlineOutlined as AddIcon,
   FormatListBulletedOutlined as TransactionsIcon,
-  // CategoryOutlined as CategoryIcon,
+  CategoryOutlined as CategoryIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -33,6 +33,11 @@ const Navigation = () => {
       name: "Transações",
       url: "/transactions",
     },
+    {
+      icon: <CategoryIcon />,
+      name: "Categorias",
+      url: "/categories",
+    },
   ];
 
   const pages2 = [
@@ -44,7 +49,7 @@ const Navigation = () => {
     {
       icon: <AddIcon />,
       name: "Nova Categoria",
-      url: "/new-category",
+      url: "/categories/new",
     },
   ];
 
