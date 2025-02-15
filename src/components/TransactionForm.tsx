@@ -20,14 +20,21 @@ const formatCurrency = (inputValue: string) => {
 
 const TransactionForm = ({ transaction, readOnly }: Props) => {
   const { categories } = useCategories();
+
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
-    setSelectedCategoryId(
-      categories.length > 0 ? (transaction?.categoryId as string) : ""
-    );
-  }, []);
+    if (!transaction) return;
+
+    if (categories.length > 0) {
+      setSelectedCategoryId(transaction.categoryId);
+    }
+
+    setDate(transaction.date.split("T")[0]);
+    setAmount(formatCurrency(`${transaction.amount * 100}`));
+  }, [transaction, categories]);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -38,13 +45,12 @@ const TransactionForm = ({ transaction, readOnly }: Props) => {
             type="date"
             label="Data"
             variant="outlined"
-            defaultValue={
-              (transaction ? transaction.date : new Date().toISOString()).split(
-                "T"
-              )[0]
-            }
+            value={date}
             disabled={readOnly}
             fullWidth
+            onChange={(e) => {
+              setDate(e.target.value);
+            }}
           />
         </Grid>
         <Grid size={{ xs: 6, md: 4 }}>
@@ -91,7 +97,7 @@ const TransactionForm = ({ transaction, readOnly }: Props) => {
             id="description"
             label="Descrição"
             variant="outlined"
-            value={transaction?.description}
+            value={transaction ? transaction.description : ""}
             disabled={readOnly}
             autoComplete="off"
             fullWidth

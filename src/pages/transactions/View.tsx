@@ -14,16 +14,8 @@ import { useAuth } from "../../hooks/auth.hook";
 import TransactionsService, {
   ITransaction,
 } from "../../services/transactions.service";
-import TransactionForm from "../../components/TransactionForm";
 
-const formatCurrency = (inputValue: string) => {
-  let rawValue = inputValue.replace(/\D/g, "");
-  let numericValue = parseFloat(rawValue) / 100;
-  return numericValue.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-};
+import TransactionForm from "../../components/TransactionForm";
 
 const ViewTransaction = () => {
   const params = useParams();
@@ -31,7 +23,6 @@ const ViewTransaction = () => {
 
   const { token } = useAuth();
 
-  const [amount, setAmount] = useState("");
   const [transaction, setTransaction] = useState<ITransaction>();
 
   const toNewPage = () => navigate(`/transactions/new`);
@@ -47,9 +38,7 @@ const ViewTransaction = () => {
         const res = await transactionsApi.getTransactionById(params.id);
         const transactionApi = res.data.transaction;
         if (transactionApi) {
-          const formattedValue = formatCurrency(`${transactionApi.amount}`);
           setTransaction(transactionApi);
-          setAmount(formattedValue);
         } else {
           navigate(-1);
         }
@@ -62,14 +51,11 @@ const ViewTransaction = () => {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5">Visualizando Transação</Typography>
+        <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
+          {transaction ? transaction.description : "Transação"}
+        </Typography>
 
-        <TransactionForm
-          readOnly
-          data={transaction}
-          amountValueState={amount}
-          setSelectedCategoryId={() => null}
-        />
+        <TransactionForm readOnly transaction={transaction} />
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Button variant="contained" color="info" onClick={() => navigate(-1)}>
