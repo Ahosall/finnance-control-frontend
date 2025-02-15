@@ -13,10 +13,11 @@ import EditTransaction from "./pages/transactions/Edit";
 
 // Categories
 import ListCategories from "./pages/categories/List";
+import NewCategories from "./pages/categories/New";
 
 // Auth pages
-import SignIn from "./pages/auth/SignIn";
-import SignUp from "./pages/auth/SignUp";
+import SignIn from "./pages/authentication/SignIn";
+import SignUp from "./pages/authentication/SignUp";
 
 const routes = createBrowserRouter([
   {
@@ -28,11 +29,12 @@ const routes = createBrowserRouter([
     ),
     children: [
       { path: "", element: <Dashboard /> },
-      { path: "/categories", element: <ListCategories /> },
       { path: "/transactions/", element: <ListTransactions /> },
       { path: "/transactions/new", element: <NewTransaction /> },
       { path: "/transactions/:id", element: <ViewTransaction /> },
       { path: "/transactions/:id/edit", element: <EditTransaction /> },
+      { path: "/categories", element: <ListCategories /> },
+      { path: "/categories/new", element: <NewCategories /> },
     ],
   },
   {
