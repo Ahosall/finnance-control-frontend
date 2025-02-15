@@ -20,7 +20,7 @@ const TransactionsFilter = ({ categories }: Props) => {
           fullWidth
         />
       </Grid>
-      <Grid size={{ xs: 12, lg: 4 }}>
+      <Grid size={{ xs: 12, lg: 3, xl: 3 }}>
         <TextField
           variant="outlined"
           select
@@ -38,7 +38,7 @@ const TransactionsFilter = ({ categories }: Props) => {
           ))}
         </TextField>
       </Grid>
-      <Grid size={{ xs: 6, lg: 3 }}>
+      <Grid size={{ xs: 6, lg: 3, xl: 2 }}>
         <TextField
           variant="outlined"
           type="date"
@@ -46,7 +46,7 @@ const TransactionsFilter = ({ categories }: Props) => {
           fullWidth
         />
       </Grid>
-      <Grid size={{ xs: 6, lg: 3 }}>
+      <Grid size={{ xs: 6, lg: 3, xl: 2 }}>
         <TextField
           variant="outlined"
           type="date"
@@ -54,7 +54,7 @@ const TransactionsFilter = ({ categories }: Props) => {
           fullWidth
         />
       </Grid>
-      <Grid size={{ xs: 12, lg: 2 }}>
+      <Grid size={{ xs: 12, lg: 3, xl: 1 }}>
         <Button variant="contained" fullWidth sx={{ height: "100%" }}>
           Filtrar
         </Button>
