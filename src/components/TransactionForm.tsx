@@ -35,7 +35,7 @@ const TransactionForm = ({ transaction, readOnly }: Props) => {
 
     setDate(transaction.date.split("T")[0]);
     setAmount(formatCurrency(`${transaction.amount * 100}`));
-    setDescription(transaction.date.split("T")[0]);
+    setDescription(transaction.description);
   }, [transaction, categories]);
 
   return (
