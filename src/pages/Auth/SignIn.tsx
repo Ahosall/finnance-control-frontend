@@ -18,11 +18,13 @@ const SignIn = () => {
   const { token, login } = useAuth();
 
   const [messageError, setMessageError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toSignUp = () => navigate("/signup");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const form = e.currentTarget;
     const formElements = form.elements as typeof form.elements & {
@@ -34,9 +36,14 @@ const SignIn = () => {
       .then(() => {
         navigate("/");
       })
-      .catch(() => {
-        setMessageError("E-mail ou senha incorretos");
-      });
+      .catch((err) => {
+        if (err.status === 401) {
+          setMessageError("E-mail ou senha incorretos");
+          return;
+        }
+        setMessageError("Tente novamente mais tarde.");
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -90,6 +97,8 @@ const SignIn = () => {
                     type="email"
                     label="E-mail"
                     autoComplete="off"
+                    autoFocus
+                    disabled={loading}
                     error={messageError != ""}
                     onChange={() => setMessageError("")}
                     fullWidth
@@ -102,6 +111,7 @@ const SignIn = () => {
                     type="password"
                     label="Senha"
                     autoComplete="off"
+                    disabled={loading}
                     error={messageError != ""}
                     onChange={() => setMessageError("")}
                     fullWidth
@@ -130,6 +140,7 @@ const SignIn = () => {
                     variant="contained"
                     color="success"
                     type="submit"
+                    loading={loading}
                     fullWidth
                   >
                     Entrar

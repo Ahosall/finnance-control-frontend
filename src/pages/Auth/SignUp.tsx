@@ -21,6 +21,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [retypeError, setRetypeError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ const SignUp = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     if (passwordError !== "") return;
 
@@ -51,7 +53,8 @@ const SignUp = () => {
       })
       .catch(() => {
         setMessageError("Falha ao tentar criar usuário");
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -88,6 +91,7 @@ const SignUp = () => {
                     type="text"
                     label="Nome Completo"
                     autoComplete="off"
+                    disabled={loading}
                     fullWidth
                     required
                   />
@@ -97,6 +101,7 @@ const SignUp = () => {
                     type="email"
                     label="E-mail"
                     autoComplete="off"
+                    disabled={loading}
                     fullWidth
                     required
                   />
@@ -108,6 +113,7 @@ const SignUp = () => {
                     label="Senha"
                     autoComplete="off"
                     helperText={passwordError}
+                    disabled={loading}
                     fullWidth
                     required
                     onChange={(e) => {
@@ -128,6 +134,7 @@ const SignUp = () => {
                     label="Senha Novamente"
                     autoComplete="off"
                     helperText={retypeError}
+                    disabled={loading}
                     fullWidth
                     required
                     onChange={(e) => {
@@ -159,6 +166,7 @@ const SignUp = () => {
                   <Button
                     variant="contained"
                     color="success"
+                    loading={loading}
                     type="submit"
                     fullWidth
                   >
