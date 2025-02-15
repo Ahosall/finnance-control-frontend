@@ -31,6 +31,21 @@ class TransactionsService {
     });
   }
 
+  async createTransaction(
+    date: Date,
+    categoryId: string,
+    amount: number,
+    description: string
+  ) {
+    const data = {
+      date,
+      categoryId,
+      amount,
+      description,
+    };
+    return await this.api.post<{ transaction: ITransaction }>("/", data);
+  }
+
   async listTransactions(start: Date, end: Date) {
     const startDate = start.toISOString().slice(0, 10);
     const endDate = end.toISOString().slice(0, 10);

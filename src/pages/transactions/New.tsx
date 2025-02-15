@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -9,57 +8,52 @@ import {
 } from "@mui/material";
 
 import TransactionForm from "../../components/TransactionForm";
+import TransactionsService from "../../services/transactions.service";
+import { useAuth } from "../../hooks/auth.hook";
+import { useState } from "react";
 
-const formatCurrency = (inputValue: string) => {
-  let rawValue = inputValue.replace(/\D/g, "");
-  let numericValue = parseFloat(rawValue) / 100;
-  return numericValue.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
+const fixFormmatedAmount = (inputValue: string) => {
+  return parseFloat(
+    inputValue
+      .replace(".", "")
+      .replace(",", ".")
+      .replace(/[^0-9.]/g, "")
+  );
 };
 
 const NewTransaction = () => {
   const navigate = useNavigate();
 
-  const [amount, setAmount] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const { token } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    if (!inputValue) {
-      setAmount("");
-      return;
-    }
-
-    const formattedValue = formatCurrency(inputValue);
-    setAmount(formattedValue);
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (!token) return;
+
+    const transactionsApi = new TransactionsService(token);
 
     const form = e.currentTarget;
     const formElements = form.elements as typeof form.elements & {
       date: { value: string };
+      amount: { value: string };
       description: { value: string };
     };
 
-    const amountFixed = parseFloat(
-      amount
-        .replace(".", "")
-        .replace(",", ".")
-        .replace(/[0-9.]/g, "")
-    );
-
-    const data = {
-      date: new Date(formElements.date.value),
-      categoryId: selectedCategoryId,
-      amount: amountFixed,
-      description: formElements.description.value,
-    };
-
-    // Lógica para criar transação
+    await transactionsApi
+      .createTransaction(
+        new Date(formElements.date.value),
+        (form.elements as any)[2].value,
+        fixFormmatedAmount(formElements.amount.value),
+        formElements.description.value
+      )
+      .then((res) => {
+        navigate(`/transactions/${res.data.transaction.id}`);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -67,11 +61,7 @@ const NewTransaction = () => {
       <CardContent>
         <Typography variant="h5">Nova Transação</Typography>
 
-        <TransactionForm
-          amountValueState={amount}
-          handleChange={handleChange}
-          setSelectedCategoryId={setSelectedCategoryId}
-        />
+        <TransactionForm readOnly={loading} />
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Button variant="contained" color="info" onClick={() => navigate(-1)}>
