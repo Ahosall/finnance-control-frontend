@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "../context/auth.context";
+import { useAuth } from "../hooks/auth.hook";
 
 interface Props {
   children: ReactNode;

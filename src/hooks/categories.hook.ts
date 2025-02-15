@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { useAuth } from "../context/auth.context";
+import { useAuth } from "./auth.hook";
+
 import CategoriesService, {
   ICategory,
   TCategoriesForDashboard,

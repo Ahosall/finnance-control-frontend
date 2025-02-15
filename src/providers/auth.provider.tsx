@@ -1,26 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
+
+import { AuthContext, IAuthUser } from "../context/auth.context";
+
 import UsersService from "../services/users.service";
-
-interface IAuthUser {
-  id: string;
-  name: string;
-  email: string;
-}
-
-type TAuthContext = {
-  user: IAuthUser | null;
-  token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-};
-
-const AuthContext = createContext<TAuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IAuthUser | null>(null);
@@ -59,12 +41,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };

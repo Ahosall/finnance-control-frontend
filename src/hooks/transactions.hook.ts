@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { useAuth } from "../context/auth.context";
+import { useAuth } from "./auth.hook";
 import TransactionsService, {
   ITransaction,
 } from "../services/transactions.service";
 
 export const useTransactions = (start: Date, end: Date) => {
   const { token } = useAuth();
-  const [categories, setCategories] = useState<ITransaction[]>([]);
+  const [transactions, setTrasactions] = useState<ITransaction[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export const useTransactions = (start: Date, end: Date) => {
       setLoading(true);
       try {
         const res = await categoriesApi.listTransactions(start, end);
-        setCategories(res.data);
+        setTrasactions(res.data.transactions);
       } catch (error) {
         console.error("Erro ao buscar transações", error);
       } finally {
@@ -30,5 +30,5 @@ export const useTransactions = (start: Date, end: Date) => {
     fetchData();
   }, [token]);
 
-  return { categories, loading };
+  return { transactions, loading };
 };

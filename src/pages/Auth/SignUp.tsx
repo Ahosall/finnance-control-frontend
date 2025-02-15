@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -8,19 +9,50 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/auth.context";
+
+import { useAuth } from "../../hooks/auth.hook";
+
+import UsersService from "../../services/users.service";
 
 const SignUp = () => {
   const { token } = useAuth();
 
+  const [messageError, setMessageError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [retypeError, setRetypeError] = useState("");
 
   const navigate = useNavigate();
 
-  const toSignUp = () => navigate("/signin");
+  const toSignIn = () => navigate("/signin");
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (passwordError !== "") return;
+
+    const usersApi = new UsersService();
+
+    const form = e.currentTarget;
+    const formElements = form.elements as typeof form.elements & {
+      name: { value: string };
+      email: { value: string };
+      password: { value: string };
+    };
+
+    usersApi
+      .createUser(
+        formElements.name.value,
+        formElements.email.value,
+        formElements.password.value
+      )
+      .then(() => {
+        navigate("/signin");
+      })
+      .catch(() => {
+        setMessageError("Falha ao tentar criar usuário");
+      });
+  };
 
   useEffect(() => {
     if (token) {
@@ -31,7 +63,11 @@ const SignUp = () => {
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <Box sx={{ position: "absolute", height: "100%", width: "450px" }}>
-        <Card sx={{ height: "100%", borderRadius: 0 }} component="form">
+        <Card
+          sx={{ height: "100%", borderRadius: 0 }}
+          component="form"
+          onSubmit={handleSignUp}
+        >
           <CardContent
             sx={{ height: "100%", display: "flex", alignItems: "center" }}
           >
@@ -42,7 +78,9 @@ const SignUp = () => {
               <Typography
                 sx={{ textAlign: "center", mb: 2, color: "text.secondary" }}
               >
-                Seu controle financeiro começa aqui!
+                {messageError !== ""
+                  ? "Seu controle financeiro começa aqui!"
+                  : ""}
               </Typography>
               <Grid container spacing={2}>
                 <Grid size={12}>
@@ -111,7 +149,7 @@ const SignUp = () => {
                     component="span"
                     color="success"
                     sx={{ cursor: "pointer" }}
-                    onClick={toSignUp}
+                    onClick={toSignIn}
                   >
                     Acesse agora
                   </Typography>

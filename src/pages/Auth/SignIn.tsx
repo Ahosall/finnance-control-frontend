@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAuth } from "../../context/auth.context";
+import { useAuth } from "../../hooks/auth.hook";
 
 const SignIn = () => {
   const navigate = useNavigate();

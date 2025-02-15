@@ -4,7 +4,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 
 import App from "./App.tsx";
 
-import { AuthProvider } from "./context/auth.context.tsx";
+import { AuthProvider } from "./providers/auth.provider.tsx";
+
 import { darkTheme } from "./theme.tsx";
 
 import "@fontsource/roboto/300.css";

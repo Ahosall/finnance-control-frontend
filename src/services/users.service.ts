@@ -25,6 +25,10 @@ class UsersService {
     });
   }
 
+  async createUser(name: string, email: string, password: string) {
+    return await this.api.post("/", { name, email, password });
+  }
+
   async loginUser(email: string, password: string) {
     return this.api.post<ILogin>("/login", { email, password });
   }

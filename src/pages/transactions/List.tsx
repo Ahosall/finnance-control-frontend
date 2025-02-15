@@ -6,11 +6,13 @@ import {
   FilterAltOffOutlined as DisableFilterIcon,
 } from "@mui/icons-material";
 
+import { useAuth } from "../../hooks/auth.hook";
 import { useCategories } from "../../hooks/categories.hook";
-import { useAuth } from "../../context/auth.context";
+
 import TransactionsService, {
   TTransactionWithBalance,
 } from "../../services/transactions.service";
+
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsFilter from "../../components/TransactionsFilter";
 
