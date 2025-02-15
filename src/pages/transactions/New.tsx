@@ -67,7 +67,12 @@ const NewTransaction = () => {
         <Button variant="contained" color="info" onClick={() => navigate(-1)}>
           Voltar
         </Button>
-        <Button variant="contained" color="success" type="submit">
+        <Button
+          variant="contained"
+          color="success"
+          type="submit"
+          loading={loading}
+        >
           Salvar
         </Button>
       </CardActions>
